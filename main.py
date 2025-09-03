@@ -20,18 +20,62 @@ def main():
     sample_size = 1 # bytes
     waves = [
         itertools.chain(
-            zero_wave(sample_rate, crochet_duration * 4),
-            sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["F4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["G4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["G4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, semibreve_duration),
+            zero_wave(sample_rate, crochet_duration * 1),
         ),
         itertools.chain(
-            sin_wave(note_frequencies["A4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["B4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["C5"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D5"], sample_rate, crochet_duration),
-            zero_wave(sample_rate, crochet_duration * 4),
+            zero_wave(sample_rate, crochet_duration * 1),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["G4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["G4"], sample_rate, minim_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            damped_sin_wave(note_frequencies["C4"], sample_rate, semibreve_duration),
         ),
     ]
 
@@ -87,6 +131,10 @@ def sin_wave(frequency, sample_rate, duration):
     total_samples = int(sample_rate * duration)
     for n in range(total_samples):
         yield math.sin(2 * math.pi * frequency * n / sample_rate)
+
+def damped_sin_wave(frequency, sample_rate, duration, damping=1):
+    for i, sample in enumerate(sin_wave(frequency, sample_rate, duration)):
+        yield sample * math.exp(-damping * i / sample_rate)
 
 def zero_wave(sample_rate, duration):
     total_samples = int(sample_rate * duration)
