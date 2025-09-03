@@ -20,33 +20,19 @@ def main():
     sample_size = 1 # bytes
     waves = [
         itertools.chain(
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
+            zero_wave(sample_rate, crochet_duration * 4),
             sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
             sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
             sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, minim_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, minim_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["G4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["G4"], sample_rate, minim_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["C4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["E4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["D4"], sample_rate, crochet_duration),
-            sin_wave(note_frequencies["C4"], sample_rate, semibreve_duration),
-        )
+            sin_wave(note_frequencies["F4"], sample_rate, crochet_duration),
+        ),
+        itertools.chain(
+            sin_wave(note_frequencies["A4"], sample_rate, crochet_duration),
+            sin_wave(note_frequencies["B4"], sample_rate, crochet_duration),
+            sin_wave(note_frequencies["C5"], sample_rate, crochet_duration),
+            sin_wave(note_frequencies["D5"], sample_rate, crochet_duration),
+            zero_wave(sample_rate, crochet_duration * 4),
+        ),
     ]
 
     sample_wave = lambda value: sample_to_int(value, sample_size)
@@ -75,7 +61,7 @@ def write_format_chunk(file, sample_rate, sample_size, channels):
     file.write(b'fmt ')
     file.write((0x10).to_bytes(4, 'little'))
     file.write((0x01).to_bytes(2, 'little'))
-    file.write((0x01).to_bytes(2, 'little'))
+    file.write(len(channels).to_bytes(2, 'little'))
     file.write((sample_rate).to_bytes(4, 'little'))
     file.write((bytes_per_second).to_bytes(4, 'little'))
     file.write((sample_size).to_bytes(2, 'little'))
@@ -101,6 +87,11 @@ def sin_wave(frequency, sample_rate, duration):
     total_samples = int(sample_rate * duration)
     for n in range(total_samples):
         yield math.sin(2 * math.pi * frequency * n / sample_rate)
+
+def zero_wave(sample_rate, duration):
+    total_samples = int(sample_rate * duration)
+    for _ in range(total_samples):
+        yield 0.0
 
 def sample_to_int(sample, sample_size):
     amplitude = (2 ** (8 * sample_size)) / 2 - 1
